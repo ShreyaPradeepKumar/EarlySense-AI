@@ -1,0 +1,119 @@
+/* Simple, clean styling for EarlySense AI */
+:root {
+  --bg: #eef3f9;
+  --card: #ffffff;
+  --text: #182230;
+  --muted: #5f6f85;
+  --primary: #1f6feb;
+  --primary-dark: #1557b0;
+  --danger: #c62828;
+  --danger-bg: #fdeaea;
+  --safe: #1b7f3a;
+  --safe-bg: #e8f7ee;
+  --border: #d9e2ec;
+  --shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: "Segoe UI", Tahoma, Arial, sans-serif;
+  background: linear-gradient(180deg, #f7fbff 0%, var(--bg) 100%);
+  color: var(--text);
+}
+
+.app { max-width: 1120px; margin: 0 auto; padding: 32px 20px 24px; }
+
+.header {
+  text-align: center;
+  margin-bottom: 28px;
+  padding: 28px 20px;
+  background: linear-gradient(135deg, #6d28d9, #8b5cf6);
+  color: #fff;
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+}
+.header h1 { margin: 0 0 8px; font-size: 2.2rem; letter-spacing: 0.2px; }
+.header p { margin: 0; color: rgba(255,255,255,0.92); font-size: 1.02rem; }
+
+.main-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  align-items: stretch;
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 24px;
+  box-shadow: var(--shadow);
+}
+.card h2 { margin: 0 0 6px; font-size: 1.35rem; }
+.card-subtitle { margin: 0 0 20px; color: var(--muted); font-size: 0.95rem; }
+
+.form { display: flex; flex-direction: column; gap: 14px; }
+label { display: flex; flex-direction: column; gap: 6px; font-weight: 600; font-size: 0.95rem; color: #243447; }
+select {
+  padding: 11px 12px;
+  border-radius: 10px;
+  border: 1px solid #c8d6e5;
+  font-size: 0.95rem;
+  background: #fbfdff;
+  color: var(--text);
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+select:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(31, 111, 235, 0.15);
+}
+
+.submit-btn {
+  margin-top: 6px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: none;
+  background: var(--primary);
+  color: white;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.05s;
+}
+.submit-btn:hover { background: var(--primary-dark); }
+.submit-btn:active { transform: translateY(1px); }
+.submit-btn:disabled { opacity: 0.7; cursor: not-allowed; }
+
+.info { color: var(--muted); margin: 0; padding: 14px 0; }
+
+.error-box {
+  background: var(--danger-bg);
+  color: var(--danger);
+  padding: 14px 16px;
+  border-radius: 10px;
+  border: 1px solid #f3c2c2;
+  font-weight: 500;
+}
+
+.result-box {
+  padding: 20px;
+  border-radius: 12px;
+  line-height: 1.5;
+}
+.result-box.risk { background: var(--danger-bg); border: 1px solid #f0b7b7; }
+.result-box.risk h3 { color: var(--danger); }
+.result-box.safe { background: var(--safe-bg); border: 1px solid #b7dec5; }
+.result-box.safe h3 { color: var(--safe); }
+.result-box h3 { margin: 0 0 10px; font-size: 1.4rem; }
+.result-box p { margin: 8px 0; }
+.note { font-size: 0.88rem; color: var(--muted); margin-top: 14px; padding-top: 12px; border-top: 1px solid rgba(0,0,0,0.08); }
+
+.footer { text-align: center; margin-top: 28px; color: var(--muted); font-size: 0.9rem; }
+
+@media (max-width: 850px) {
+  .main-content { grid-template-columns: 1fr; }
+  .header h1 { font-size: 1.8rem; }
+  .app { padding: 20px 14px; }
+}
