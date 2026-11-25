@@ -1,52 +1,89 @@
 ﻿# EarlySense AI
 
-EarlySense AI is a beginner-friendly Machine Learning web application that predicts whether a student may be **At Risk** based on background and preparation features. It uses a React frontend, a FastAPI backend, and a Scikit-learn model trained on the Students Performance dataset.
+EarlySense AI is a beginner-friendly machine learning web application that predicts whether a student may be **At Risk** based on background and test preparation information. The project combines a React frontend, a FastAPI backend, and a Scikit-learn training pipeline in one simple, integrated codebase.
+
+## Project Overview
+
+The application uses the Students Performance dataset stored in `backend/data.csv`. The original dataset does not include an at-risk label, so the project creates one during training using a clear rule: a student is marked **At Risk** if any of the three scores (`math score`, `reading score`, or `writing score`) is below 60.
+
+To avoid data leakage, the score columns are used only to create the target label. They are **not** used as input features for prediction. The model predicts risk from background and preparation features that are available in the form.
 
 ## Features
 
-- **ML workflow in one file**: `backend/ml_model.py` handles loading, exploration, cleaning, preprocessing, training, evaluation, saving, loading, and prediction.
-- **FastAPI backend**: Simple endpoints for health check, model info, and prediction.
-- **React frontend**: Clean form-based UI that sends student data to the backend and displays risk results.
-- **End-to-end local app**: Frontend and backend run together on your machine.
+- **End-to-end ML workflow**: Load, explore, clean, preprocess, split, train, compare, evaluate, save, load, and predict in `backend/ml_model.py`.
+- **Simple FastAPI backend**: Health, model info, and prediction endpoints in `backend/main.py`.
+- **React frontend**: Form-based interface for entering student details and viewing prediction results.
+- **Saved model artifact**: The best trained model is saved as `backend/trained_model.pkl`.
+- **Beginner-friendly structure**: Small project layout with clear file responsibilities.
+
+## Technology Stack
+
+### Backend
+
+- Python
+- FastAPI
+- Uvicorn
+- Pandas
+- NumPy
+- Scikit-learn
+- Joblib
+- Pydantic
+
+### Frontend
+
+- React
+- Vite
+- JavaScript
+- CSS
 
 ## Project Structure
 
 ```text
 EarlySense-AI/
-├── backend/
-│   ├── data.csv             # Dataset used for training
-│   ├── main.py              # FastAPI app: endpoints, validation, model loading, prediction
-│   ├── ml_model.py          # Complete ML workflow
-│   ├── requirements.txt     # Python dependencies
-│   └── trained_model.pkl    # Saved best model (created after training)
-├── frontend/
-│   ├── src/
-│   │   ├── App.jsx
-│   │   ├── App.css
-│   │   ├── main.jsx
-│   │   ├── components/
-│   │   │   ├── ErrorBoundary.jsx
-│   │   │   ├── PredictionResult.jsx
-│   │   │   └── StudentForm.jsx
-│   │   └── services/
-│   │       └── api.js
-│   ├── index.html
-│   ├── package.json
-│   └── vite.config.js
 ├── .gitignore
-└── README.md
+├── README.md
+├── backend/
+│   ├── data.csv
+│   ├── main.py
+│   ├── ml_model.py
+│   ├── requirements.txt
+│   └── trained_model.pkl                # Generated after training
+└── frontend/
+    ├── index.html
+    ├── package.json
+    ├── package-lock.json
+    ├── vite.config.js
+    └── src/
+        ├── App.css
+        ├── App.jsx
+        ├── main.jsx
+        ├── components/
+        │   ├── ErrorBoundary.jsx
+        │   ├── PredictionResult.jsx
+        │   └── StudentForm.jsx
+        └── services/
+            └── api.js
 ```
 
-## How It Works
+## Machine Learning Workflow
 
-1. **Dataset**: `backend/data.csv` contains student performance records.
-2. **Target creation**: The original dataset has no risk label. The app creates `at_risk = 1` if any score (math, reading, or writing) is below 60; otherwise `0`.
-3. **Feature selection**: Score columns are **not** used as model inputs because they define the target. The model uses background/preparation features only.
-4. **Model training**: `ml_model.py` compares Logistic Regression, Decision Tree, and Random Forest, then saves the best model as `trained_model.pkl`.
-5. **Prediction API**: `main.py` loads the saved model and exposes `/predict`.
-6. **Frontend**: React sends student details to the backend and displays the prediction.
+The ML workflow is implemented in `backend/ml_model.py`:
+
+1. **Load data**: Reads the dataset from `backend/data.csv`.
+2. **Explore data**: Prints shape, sample rows, column info, summary statistics, and category counts.
+3. **Clean data**: Removes duplicates and handles missing values with simple rules.
+4. **Create target label**: Adds `at_risk = 1` when any score is below 60; otherwise `at_risk = 0`.
+5. **Select features**: Uses only background/preparation features as inputs.
+6. **Preprocess features**: Uses a Scikit-learn `ColumnTransformer` with `OneHotEncoder(handle_unknown="ignore")` for categorical features.
+7. **Split data**: Uses `train_test_split` with a fixed random state and stratification.
+8. **Train and compare models**: Trains Logistic Regression, Decision Tree, and Random Forest using the same pipeline structure.
+9. **Evaluate models**: Calculates accuracy, precision, recall, F1 score, confusion matrix, and classification report.
+10. **Save best model**: Selects the best model by F1 score and saves it with metadata using Joblib.
+11. **Predict**: Loads the saved model and returns prediction, risk label, probability, and message.
 
 ## Input Features
+
+The prediction form sends these fields to the backend:
 
 - `gender`
 - `race/ethnicity`
@@ -56,13 +93,16 @@ EarlySense-AI/
 
 ## Prerequisites
 
-- Python 3.10+ (tested with Python 3.12)
-- Node.js 18+ and npm
-- Windows PowerShell (commands below use PowerShell)
+- Python 3.10 or later
+- Node.js 18 or later
+- npm
+- Windows PowerShell
 
-## Setup and Run (Windows PowerShell)
+## Setup and Run
 
-### 1. Backend setup and model training
+### 1. Backend Setup and Model Training
+
+Open PowerShell and run:
 
 ```powershell
 cd C:\Users\shrey\Desktop\student_eval\EarlySense-AI\backend
@@ -72,9 +112,11 @@ pip install -r requirements.txt
 python ml_model.py
 ```
 
-Expected output includes dataset exploration, model comparison metrics, best model selection, and creation of `trained_model.pkl`.
+This creates the virtual environment, installs dependencies, trains the models, prints evaluation results, and saves `backend/trained_model.pkl`.
 
-### 2. Run FastAPI backend
+### 2. Run the FastAPI Backend
+
+In the same backend terminal (with the virtual environment activated), run:
 
 ```powershell
 cd C:\Users\shrey\Desktop\student_eval\EarlySense-AI\backend
@@ -82,11 +124,14 @@ cd C:\Users\shrey\Desktop\student_eval\EarlySense-AI\backend
 uvicorn main:app --reload --port 8001
 ```
 
-Backend runs at `http://127.0.0.1:8001`. API docs: `http://127.0.0.1:8001/docs`.
+The backend will be available at:
 
-### 3. Run React frontend
+- API base URL: `http://127.0.0.1:8001`
+- Swagger docs: `http://127.0.0.1:8001/docs`
 
-Open a new PowerShell window:
+### 3. Run the React Frontend
+
+Open a new PowerShell window and run:
 
 ```powershell
 cd C:\Users\shrey\Desktop\student_eval\EarlySense-AI\frontend
@@ -94,15 +139,19 @@ npm install
 npm run dev -- --port 5174 --host 127.0.0.1
 ```
 
-Frontend runs at `http://127.0.0.1:5174`.
+The frontend will be available at:
 
-## API Endpoints
+- Frontend URL: `http://127.0.0.1:5174`
 
-- `GET /health` - API/model status
-- `GET /model-info` - model name, metrics, features
-- `POST /predict` - returns risk prediction
+## API Documentation
 
-Example request body:
+### Available Endpoints
+
+- `GET /health` - Returns API status and whether the model is loaded.
+- `GET /model-info` - Returns model name, saved metrics, feature columns, and risk threshold.
+- `POST /predict` - Accepts student input and returns a risk prediction.
+
+### Example Prediction Request
 
 ```json
 {
@@ -114,7 +163,7 @@ Example request body:
 }
 ```
 
-Example response:
+### Example Prediction Response
 
 ```json
 {
@@ -128,15 +177,16 @@ Example response:
 
 ## Troubleshooting
 
-- **`ModuleNotFoundError`**: Activate the venv and run `pip install -r requirements.txt`.
-- **Model not found**: Run `python ml_model.py` in `backend`.
-- **Frontend cannot connect to backend**: Ensure backend is running on `127.0.0.1:8001` and `frontend/src/services/api.js` points to the same URL.
-- **Port already in use**: Change backend/frontend ports and update `frontend/src/services/api.js` and CORS origins in `backend/main.py`.
-- **PowerShell activation blocked**: Run `Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass`, then activate the venv again.
-- **Blank screen after update**: Hard refresh with `Ctrl+F5` and check browser console (F12).
+- **`ModuleNotFoundError`**: Make sure the virtual environment is activated and run `pip install -r requirements.txt`.
+- **Model file not found**: Run `python ml_model.py` from the `backend` folder to generate `trained_model.pkl`.
+- **Frontend cannot reach backend**: Confirm the backend is running on `127.0.0.1:8001` and check `frontend/src/services/api.js`.
+- **Port already in use**: Start the backend or frontend on a different port, then update `frontend/src/services/api.js` and CORS origins in `backend/main.py` if needed.
+- **PowerShell script activation blocked**: Run `Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass`, then activate the virtual environment again.
+- **Blank page or stale UI**: Hard refresh the browser with `Ctrl+F5` and check the browser console for errors.
 
 ## Limitations
 
-- Educational/demo dataset; not a real-world student intervention system.
-- Risk label is derived from a simple score threshold, not real outcomes.
-- Background-only features have limited predictive power; use predictions as early-warning signals, not final judgments.
+- This is an educational/demo project, not a production student intervention system.
+- The `at_risk` label is derived from a simple score threshold (`any score < 60`), not from real intervention outcomes.
+- Predictions are based only on background and preparation features available in the dataset, so predictive power is limited.
+- The result should be treated as an early-warning signal, not a final judgment about a student.
